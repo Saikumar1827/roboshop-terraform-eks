@@ -3,7 +3,7 @@ module "eks" {
   version = "~> 21.0"  # this is module version
 
   name               = local.common_name_suffix
-  kubernetes_version = "1.33"
+  kubernetes_version = "1.32"
 
   addons = {
     coredns                = {}
@@ -33,22 +33,7 @@ module "eks" {
 
   # EKS Managed Node Group(s)
   eks_managed_node_groups = {
-    # blue = {
-    #   # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
-    #   ami_type       = "AL2023_x86_64_STANDARD"
-    #   instance_types = ["m5.xlarge"]
-    #   iam_role_additional_policies = {
-    #     amazonEFS = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
-    #     amazonEBS = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-    #   }
-
-    #   # cluster nodes autoscaling
-    #   min_size     = 2
-    #   max_size     = 10
-    #   desired_size = 2
-    # }
-
-    green = {
+    blue = {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["m5.xlarge"]
@@ -69,7 +54,37 @@ module "eks" {
       #     effect = "NO_SCHEDULE"
       #   }
       # }
+
+      labels = {
+        nodegroup = "blue"
+      }
     }
+
+    # green = {
+    #   # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
+    #   ami_type       = "AL2023_x86_64_STANDARD"
+    #   instance_types = ["m5.xlarge"]
+    #   iam_role_additional_policies = {
+    #     amazonEFS = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
+    #     amazonEBS = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+    #   }
+
+    #   # cluster nodes autoscaling
+    #   min_size     = 2
+    #   max_size     = 10
+    #   desired_size = 2
+
+      # taints = {
+      #   upgrade = {
+      #     key = "upgrade"
+      #     value = "true"
+      #     effect = "NO_SCHEDULE"
+      #   }
+      # }
+      #  labels = {
+      #   nodegroup = "green"
+      # }
+    # }
   }
 
   tags = merge(
